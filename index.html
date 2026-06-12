@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0d14">
+<title>The Golden Thread</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="The Golden Thread — a transmigration wuxia interactive fiction. You are the only soul who can see that the mountain is strung like a loom.">
+<meta property="og:title" content="The Golden Thread">
+<meta property="og:description" content="A transmigration wuxia interactive fiction. Book One: Acts I & II, complete.">
+<meta property="og:image" content="assets/title.png">
+<style>
+:root{--bg:#0a0d14;--bg2:#141b2c;--panel:#121826;--ink:#cfd6e4;--dim:#7d889e;--gold:#e8c15a;--gold2:#a8862e;
+ --jade:#58b890;--red:#e0606a;--blue:#7ea7d8;--line:#242e45}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 800px at 50% -10%,var(--bg2),var(--bg));color:var(--ink);font:17px/1.62 Georgia,'Times New Roman',serif;min-height:100vh}
+#wrap{max-width:680px;margin:0 auto;padding:18px 20px 80px}
+#hud{display:none;position:sticky;top:0;background:linear-gradient(var(--bg) 80%,transparent);padding:10px 0 6px;z-index:5;font-size:13px;color:var(--dim);letter-spacing:.4px}
+#hud .row{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
+#hud b{color:var(--gold);font-weight:normal}
+#hud .hp{color:var(--red)} #hud .thr{color:var(--blue)}
+.bar{height:4px;background:#1d2435;border-radius:2px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold2);transition:width .3s}
+h1{font-size:34px;color:var(--gold);font-weight:normal;letter-spacing:2px;text-align:center;margin:60px 0 4px}
+h2{font-size:15px;color:var(--dim);font-weight:normal;text-align:center;letter-spacing:4px;text-transform:uppercase;margin:0 0 40px}
+#main p{margin:0 0 14px}
+.scene-art{display:block;width:100%;max-height:54vh;object-fit:cover;border-radius:8px;margin:0 0 18px;border:1px solid var(--line)}
+.sys{color:var(--gold);font-style:italic;border-left:2px solid var(--gold2);padding:6px 12px;margin:16px 0;background:rgba(232,193,90,.05)}
+.gain{color:var(--jade);font-size:14px;font-style:italic}
+.loss{color:var(--red);font-size:14px;font-style:italic}
+.choices{margin-top:26px;display:flex;flex-direction:column;gap:9px}
+button.ch{font:inherit;text-align:left;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:11px 15px;cursor:pointer;transition:border .15s,background .15s}
+button.ch:hover:not(:disabled){border-color:var(--gold2);background:#182137}
+button.ch:disabled{opacity:.38;cursor:default}
+button.ch .req{color:var(--dim);font-size:13px}
+button.ch .cost{color:var(--blue);font-size:13px}
+.divider{text-align:center;color:var(--gold2);margin:22px 0;letter-spacing:6px}
+input#nm{font:inherit;background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:9px 12px;border-radius:4px;width:240px;max-width:100%}
+.combat{border:1px solid #36415e;border-radius:6px;padding:14px 16px;margin:14px 0;background:rgba(0,0,0,.3)}
+.combat .ename{color:var(--red);letter-spacing:1px}
+.combat .intent{color:var(--dim);font-style:italic;font-size:14px;margin-top:4px}
+.combat .intent .stq{color:var(--gold)}
+.clog{font-size:14px;color:var(--dim);margin:10px 0;border-top:1px dashed var(--line);padding-top:8px;min-height:18px}
+.clog .you{color:var(--ink)} .clog .foe{color:var(--red)} .clog .good{color:var(--jade)}
+.ebar{height:6px;background:#2a1a22;border-radius:3px;margin-top:6px}.ebar i{display:block;height:100%;background:var(--red);border-radius:3px;transition:width .3s}
+.small{font-size:13px;color:var(--dim)}
+a{color:var(--gold)}
+.ending{border:1px solid var(--gold2);border-radius:6px;padding:4px 18px;margin-top:24px;background:rgba(232,193,90,.04)}
+.ending h3{color:var(--gold);font-weight:normal;letter-spacing:2px}
+#foot{margin-top:44px;padding:14px 0 8px;border-top:1px solid #1a2236;text-align:center;font-size:12px}
+#foot:empty{display:none}
+#foot button.rst{font:inherit;font-size:12px;background:none;border:none;color:var(--dim);cursor:pointer;letter-spacing:.5px;padding:4px 10px}
+#foot button.rst:hover{color:var(--ink)}
+#foot button.danger{color:var(--red)}
+#foot button.danger:hover{color:#ff8a93}
+#foot .rstwarn{color:var(--dim);margin-right:4px}
+@media(max-width:520px){
+ body{font-size:16px}
+ #wrap{padding:10px 13px 60px}
+ h1{font-size:25px;margin-top:34px;letter-spacing:1px}
+ h2{letter-spacing:3px;font-size:13px}
+ #hud{font-size:12px}
+ #hud .row{gap:4px 10px}
+ button.ch{padding:13px 13px;border-radius:6px}
+ .combat{padding:11px 12px}
+ .ending{padding:2px 13px}
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="hud"></div>
+  <div id="main"></div>
+  <div id="foot"></div>
+</div>
+<script src="js/engine.js"></script>
+<script src="js/gen/prologue.js"></script>
+<script src="js/gen/act1_ch1.js"></script>
+<script src="js/gen/act1_ch2.js"></script>
+<script src="js/gen/act1_ch3.js"></script>
+<script src="js/gen/act1_ch4.js"></script>
+<script src="js/gen/act1_ch5.js"></script>
+<script src="js/gen/act1_ch6.js"></script>
+<script src="js/gen/act2_ch7.js"></script>
+<script src="js/gen/act2_ch8.js"></script>
+<script src="js/gen/act2_ch9.js"></script>
+<script src="js/gen/act2_ch10.js"></script>
+<script src="js/gen/act2_ch11.js"></script>
+<script src="js/gen/act2_ch12.js"></script>
+<script src="js/qa.js"></script>
+<script>boot();</script>
+</body>
+</html>
