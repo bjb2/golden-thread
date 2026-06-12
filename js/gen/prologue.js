@@ -8,7 +8,7 @@ SC["start"]={img:"title",t:()=>'<h1>THE GOLDEN THREAD</h1><h2>a transmigration w
  P("But the mountain keeps a furnace fed on souls like yours, an old woman went blind listening for what you'll see, and the only door home is woven shut. Bring good knots.")+
  P("First, though — you will die at a bus stop in the rain. This is the beginning.")+
  '<p class="small">A story of knots, debts, and the space between worlds. Choices persist. Progress saves itself.</p>'+
- '<p class="small"><b>Book One</b> — Acts I &amp; II, complete. Act III: The Rivers and Lakes — in production.</p>',
+ '<p class="small"><b>Books One &amp; Two</b> — Acts I–III, complete. The final book: The Silkworm Court &amp; The Pattern Sage — in production.</p>',
  c:()=>{const sv=load();const out=[{id:"n",l:sv?"Begin anew (overwrites your saved thread)":"Begin",go:"pro1",do:()=>{G=fresh();}}];
   if(sv)out.unshift({id:"c",l:"Continue from where the thread left off",do:()=>{G=load();},go:()=>G.scene==="start"?"pro1":G.scene});
   return out;}};
