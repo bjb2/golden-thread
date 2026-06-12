@@ -6,8 +6,8 @@
       endings histogram, scene coverage, step-cap hits (softlock suspects). */
 (function(){
  if(new URLSearchParams(location.search).get("qa")!=="1")return;
- const TERMINAL=id=>id.startsWith("end_")||id==="c4_harvested";
- const FUZZ_RUNS=40, STEP_CAP=600;
+ const TERMINAL=id=>id==="end_book2"||id==="c4_harvested";
+ const FUZZ_RUNS=40, STEP_CAP=900;
  const jsErrors=[];
  window.addEventListener("error",e=>jsErrors.push(e.message+" @"+(e.filename||"").split("/").pop()+":"+e.lineno));
 
@@ -46,6 +46,7 @@
     const btns=[...document.querySelectorAll("button.ch:not(:disabled)")];
     if(!btns.length){softlocks++;endings["SOFTLOCK@"+G.scene]=(endings["SOFTLOCK@"+G.scene]||0)+1;break;}
     let pick;
+    if(G.scene==="end_book1"){pick=btns.find(b=>/Act III/.test(b.textContent))||rnd(btns);pick.click();continue;}
     if(C&&C.charged){pick=btns.find(b=>/Unravel|Puppet|Mirror/.test(b.textContent))||rnd(btns);}
     else if(C&&G.hp<=8){pick=btns.find(b=>/Mend|Guard/.test(b.textContent))||rnd(btns);}
     else if(C&&Math.random()<0.6){pick=btns.find(b=>/Razor|Strike/.test(b.textContent))||rnd(btns);}

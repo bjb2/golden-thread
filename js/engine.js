@@ -110,7 +110,7 @@ function round(a){
   if(a==="unravel"){let d=G.mind+2;if(C.charged){d+=5;C.charged=false;C.i++;clog('<span class="good">You tear the gathering technique apart mid-form!</span>');}
    if(C.stance){d+=3;C.stance=null;clog('<span class="good">You find the stance\u2019s anchor-knot and rip it loose. The form collapses.</span>');}
    dmgEnemy(d,"Unravel rips qi loose");}
-  if(a==="puppet"){const nm=C.moves[C.i%C.moves.length];let d=(nm.kind==="charge"||nm.kind==="stance")?4:nm.d;
+  if(a==="puppet"){const nm=C.moves[C.i%C.moves.length];let d=nm.d!=null?nm.d:4;
    if(nm.kind==="release"&&!C.charged)d=Math.ceil(d/3);if(C.stance==="flow")d=Math.ceil(d/2);C.charged=false;C.i++;
    dmgEnemy(d,"Puppet Strings turn "+nm.n+" inward");}}
  if(C.hp<=0)return endCombat(true);
@@ -130,6 +130,7 @@ function enemyAct(){
  if(C.snared){C.snared=false;clog('<span class="foe">'+C.name+' thrashes uselessly in your snare.</span>');return;}
  const mv=C.moves[C.i%C.moves.length];C.i++;
  if(mv.kind==="stance"){C.stance=mv.st;clog('<span class="foe">'+mv.text+'</span>');return;}
+ if(mv.kind==="heal"){C.hp=Math.min(C.max,C.hp+mv.h);clog('<span class="foe">'+mv.text+'</span>');return;}
  if(mv.kind==="charge"){C.charged=true;clog('<span class="foe">'+mv.text+'</span>');return;}
  let d=mv.d;
  if(mv.kind==="release"){if(!C.charged){d=Math.ceil(d/3);clog('<span class="foe">The broken technique sputters.</span>');}C.charged=false;}
@@ -149,7 +150,8 @@ const ENEMIES={};
 /* ============ ASSETS ============ */
 const IMG={title:"title",weasel:"weasel",trials:"trials",furnace:"furnace",
  throne:"throne",home:"home",jianghu:"jianghu",heaven:"heaven",harvested:"harvested",
- brackets:"brackets",rite:"rite",ash:"ash",seal:"seal"};
+ brackets:"brackets",rite:"rite",ash:"ash",seal:"seal",
+ steps:"steps",shrine:"shrine",marsh:"marsh",silk:"silk",cocoon:"cocoon"};
 
 /* ============ SCENES ============ */
 const P=t=>"<p>"+t+"</p>";const SYS=t=>'<div class="sys">'+t+'</div>';const DIV='<div class="divider">\u2042</div>';
