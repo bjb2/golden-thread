@@ -1,0 +1,83 @@
+"use strict";
+
+/* generated from story/scenes/act5_ch30.md — do not edit */
+
+Object.assign(ENEMIES,{
+ firstreel:{name:"The Lady of the First Reel",hp:64,p2at:24,allies:true,
+  open:"She takes a body for it \u2014 the first in two hundred years: a woman of thread, drawn up out of the master warp in her own image, four hundred years of pattern walking the gallery on feet of light. \u201CI held,\u201D she says, from everywhere, and then, from one mouth, terribly small: \u201CI held. Show me, little stitch. Show me the sum that lets me stop.\u201D",
+  p2text:"The woman of thread frays at every edge at once \u2014 and keeps fighting, because that is the entire biography of the woman of thread.",
+  moves:[{n:"Founder's Stillness",kind:"stance",st:"iron",text:"Four centuries of held tension settle over her like temple bronze.",tele:"She is settling \u2014 founder-iron, four hundred years deep."},
+   {n:"Warp-lash",d:7,drain:2},
+   {n:"Drawing the Loom",kind:"heal",h:7,text:"The master warp pays into her, a province\u2019s tension reknitting her edges.",tele:"The warp brightens toward her \u2014 the Loom is about to feed its heart."},
+   {n:"Winding the First",kind:"charge",text:"Every reel in the city turns toward her at once. The chord deepens an octave.",tele:"The First winds \u2014 the founding seal-cast follows."},
+   {n:"The First Seal",d:14,kind:"release"}],
+  p2:[{n:"Selvage Form",kind:"stance",st:"flow",text:"She runs like the hem of the world \u2014 nothing past her, nothing through.",tele:"She loosens to selvage-water \u2014 flow, total."},
+   {n:"Warp-lash, doubled",d:9,drain:2},
+   {n:"Drawing the Loom",kind:"heal",h:6,text:"The dying warp pays her one more season.",tele:"The warp brightens \u2014 Snare the draw."},
+   {n:"The First Seal",d:12,kind:"release"}]},
+ fraysurge:{name:"The Great Fray",hp:60,p2at:22,allies:true,
+  open:"It has no face, so the world lends it one: the gap in the sky, pouring down into the valley as a standing tear of un-weave, edges screaming the scream the Reed Wife used to hear. It does not hate. It is just the oldest open wound in heaven, and you have removed its sutures.",
+  p2text:"The tear stops spreading outward and pours itself AT the ring \u2014 the wound fighting, at the end, to stay a wound.",
+  moves:[{n:"Unmaking",d:8,drain:2},
+   {n:"Gathering cold",kind:"charge",text:"The tear inhales. Light around it goes grey and the chord drops out of the air.",tele:"The tear inhales \u2014 the sky-fall follows."},
+   {n:"Sky-fall",d:15,kind:"release"},
+   {n:"Feeding on the gap",kind:"heal",h:7,text:"It drinks the unheld sky and widens.",tele:"It reaches for the open gap \u2014 Snare the feeding."}],
+  p2:[{n:"Unmaking, doubled",d:10,drain:2},
+   {n:"Gathering cold",kind:"charge",text:"The tear inhales, hungrier.",tele:"Inhaling again \u2014 hastier, still lethal."},
+   {n:"Sky-fall",d:13,kind:"release"}]}});
+function a5ring(){const t=G.f.a5_threads||1;C.hp-=2*t;
+ clog('<span class="good">The anchor-ring bears: '+t+' freely-given threads take their share of the field \u2014 '+(2*t)+' weight off the foe before the first exchange.</span>');
+ if(G.f.a5_read){C.hp=Math.min(C.hp,C.p2at+2);
+  clog('<span class="good">And the perfect read pays out: you tied your opening into the pattern\u2019s own grammar \u2014 the whole first movement resolves before it is fought.</span>');}}
+
+
+SC["a5c30_morning"]={t:()=>SYS(`CHAPTER THIRTY — THE FINAL PATTERN`)+P(`The season turns at dawn, and the city knows it the way a body knows a held breath ending.`)+P(`The rota stands in its shifts down every gallery — four hundred shoulders, Yan's signal-flags at the intervals, Madam Xian${G.f.a4_xian=="turned"?" at the master-line's head":" attending in glacial silence, bound by the finding"}. Mei's infirmary lamps are lit. Bao's supply line runs hot tea to people who mostly can't drink for nerves.`)+((G.f.a4_suyin=="freed")?(P(`Suyin stands FREE at the heart-position's rim, her own woman for the first time in forty years, Sho's hand in hers, both resonances already humming. Below everything, pinned and patient, the Great Fray waits to learn what holds it next.`)):(P(`Suyin stands woven at the heart-position, hands open across the lines, forty years of practice gathered for the one hour they were always for. Below everything, pinned and patient, the Great Fray waits to learn what holds it next.`)))+P(`And the choice that the whole game has been spending into your hands comes due, plain as a kitchen rule. The old Loom stands down today. What goes up?`),
+ c:()=>[{id:"c0",l:`WEAVE IT OVER. The counter-pattern takes the sky: willing thread, the rota, the ring — the third way, tied across the gap at full scale.`,do:()=>{G.f.a5_loom="woven";},go:"a5c30_w_stage"},
+  {id:"c1",l:`UNRAVEL IT. No loom should hold the sky — cut the old machine, hold the edges through the surge, and let heaven's own needlework take the load it was always sending sutures for.`,do:()=>{G.f.a5_loom="free";},go:"a5c30_f_stage"},
+  {id:"c2",l:`INHERIT IT. Take the heart-position yourself — a living Sage where four hundred years of dead pattern sat, the Loom remade around its new stitch from the inside.`,do:()=>{G.f.a5_loom="heir";},go:"a5c30_h_stage"}]};
+
+SC["a5c30_w_stage"]={t:()=>P(`You raise your hands, the rota takes its tension, and the crossover begins: the old warp paying out, the new ring paying in, the gap opening at the heart of a held sky like a breath between notes.`)+P(`And the master warp stands up.`)+P(`She said she would, if the gap gaped — and the gap, for one lawful hour, must gape. Centuries of holding do not watch that hour idle. The Lady of the First Reel takes a body and walks the gallery to meet you at the gap's rim, and the fight is the argument, and the argument is final: her proven machine against your living pattern, over an open sky.`),
+ c:()=>[{id:"c0",l:`The read of your life, before the first exchange.`,req:()=>(G.insight>=18),rq:"(needs Insight 18)",do:()=>{G.f.a5_read=true;note("You read her whole opening through the warp she is made of \u2014 four centuries of habit have a GRAMMAR, and you tie your first knot inside it before she finishes standing up.");},go:"a5c30_reel_w"},
+  {id:"c1",l:`Meet her at the rim.`,go:"a5c30_reel_w"}]};
+
+SC.a5c30_reel_w={combat:"firstreel",win:"a5c30_tied",lose:"e_spent",
+ t:()=>P("\u201CFinish your pattern,\u201D she says, \u201CTHROUGH me. If it cannot pass the woman who held four hundred years, it cannot hold one storm. This is not spite, little stitch. This is the last examination I am qualified to give.\u201D")+
+ SYS("THE FINAL PATTERN \u2014 the Lady defends the proven sum. She braces in founder-iron, runs to selvage-water, draws on the dying Loom itself \u2014 Snare the draw \u2014 and the First Seal lands like a verdict. The ring stands with you."),
+ cstart:()=>a5ring()};
+
+
+SC["a5c30_f_stage"]={t:()=>P(`You raise your hands, and instead of tying, you UNTIE.`)+P(`The rota takes the edges. The ring takes the corners. And you run Unravel at a scale no weaver has ever attempted: the Grand Loom's dead pattern coming apart in ordered sheets, the whole accumulated machine paying out into nothing — and the Great Fray, unpinned for the first time since its sutures went in, SURGES into the gap with four centuries of patience behind it. The Lady's voice, from every reel at once, neither triumphant nor surprised: “And now the sum runs itself, little stitch. HOLD.”`),
+ c:()=>[{id:"c0",l:`The perfect read, before it reaches the ring.`,req:()=>(G.insight>=18),rq:"(needs Insight 18)",do:()=>{G.f.a5_read=true;note("You read the tear's whole first movement in the chord it tears apart \u2014 a wound has a grammar too, and its name is the path of least mending. You tie the ring's answer before the surge arrives.");},go:"a5c30_surge"},
+  {id:"c1",l:`Hold the line.`,go:"a5c30_surge"}]};
+
+SC.a5c30_surge={combat:"fraysurge",win:"a5c30_cut",lose:"e_spent",
+ t:()=>P("It comes down the valley like weather with a grudge \u2014 the oldest open wound in heaven, loose at last, and between it and ten thousand villages: one ring of freely-given knots, four hundred willing shoulders, and a boy from a bus stop with gold in his hands.")+
+ SYS("THE GREAT FRAY \u2014 it drains, it inhales before the sky-fall, and it FEEDS on the open gap; Snare the feeding. The ring stands with you. The suture-truth is your deepest ally: every mend you tie, heaven was already trying to make."),
+ cstart:()=>a5ring()};
+
+
+SC["a5c30_h_stage"]={t:()=>P(`You walk to the heart-position, and you sit down in the middle of the sky.`)+((G.f.a4_suyin=="freed")?(P(`Suyin's hand finds your shoulder at the rim — free, fierce, appalled. “Stitch. You know what this seat does.” You do. That's why a Sage has to take it: woven LIVING, the pattern's own grammar, the heart that mends instead of spends.`)):(P(`Suyin, woven beside you, turns her whole fan of lines toward the seat. “Stitch. You know what this seat does.” You do. That's why a Sage has to take it: woven LIVING, the pattern's own grammar, the heart that mends instead of spends.`)))+P(`The Lady takes a body and stands at the rim, and what is in her many voices is not opposition. It is, four hundred years late, HOPE — and the founder's last duty, which is to be sure. “The heart-seat broke me into thread, child, and I came to it grown and willing. You will sit it for centuries. So: the last examination, the only honest one. Show me what you hold like when EVERYTHING is pulling.”`),
+ c:()=>[{id:"c0",l:`Read her whole examination before it begins — and answer it inside her own grammar.`,req:()=>(G.insight>=18),rq:"(needs Insight 18)",do:()=>{G.f.a5_read=true;note("Four hundred years of habit have a grammar. You read the examination's first movement off her warp before she begins, and tie your answer into it \u2014 and feel her approve, from everywhere, like winter sun.");},go:"a5c30_reel_h"},
+  {id:"c1",l:`Stand, and be examined.`,go:"a5c30_reel_h"}]};
+
+SC.a5c30_reel_h={combat:"firstreel",win:"a5c30_inherit",lose:"e_spent",
+ t:()=>P("\u201CBegin,\u201D say ten thousand reels, and the woman of thread comes at the future heart of the world with everything the old heart ever learned.")+
+ SYS("THE EXAMINATION \u2014 the Lady tests her successor with the founder\u2019s whole curriculum: iron, water, the Loom\u2019s own draw \u2014 Snare it \u2014 and the First Seal. The ring stands with you. Pass, and the seat is yours; fail, and she keeps holding, because someone must."),
+ cstart:()=>a5ring()};
+
+
+SC.e_spent={img:"harvested",t:()=>'<div class="ending"><h3>THE PATTERN TAKES YOU</h3>'+
+ P("The field comes apart \u2014 and the gap, lawful and open and patient, spends what falls into it. You feel yourself paid out like thread off a reel, and the last thing each part of you knows is the chord.")+
+ P('<span class="small">But you are a Pattern Sage, and a Sage is a line in the fabric \u2014 and a thread once grasped is never wholly lost\u2026</span>')+"</div>",
+ c:()=>[{id:"r",l:"Grasp the thread. (Stand again at the crossover)",go:()=>{if(CKPT){G=JSON.parse(CKPT);return G.scene;}G.hp=G.maxhp;G.thr=G.maxthr;return "a5c30_morning";}},
+  {id:"t",l:"Let the pattern keep you. (Title screen)",go:"start"}]};
+
+
+SC["a5c30_tied"]={t:()=>P(`She yields at the rim of the gap, on one knee, the body of thread fraying faster than the dying Loom can feed it — and what she does with her last lawful hour is the thing you will tell for the rest of your life: she JOINS THE ROTA.`)+P(`“The erratum,” she says, from everywhere, even now. “Read it aloud, weaver. The Court's books are wrong from page one; the consignments were sutures; the founder erred and the dead deserve the saying. Entered. Witnessed. NOW —” the body of thread stands, steps to a rota-station like any miller's daughter, and takes hold — “tie your knot, little stitch. I held four hundred years. I can hold one more hour. It would be my honor to hold it for YOU.”`)+P(`And the tying is everything the six weeks built it to be: fast, true, witnessed. ${G.f.a4_suyin=="freed"?"Suyin and Sho hold the gap's rim as free women, two resonances singing the same courtyard note across it":"Suyin holds the gap from inside the dying pattern, forty years of practice spent in one perfect hour — and as the old warp pays out its last, her woven fan pays out WITH it, and she steps from the wreck of the machine unwoven, gasping, FREE, her own two feet under her own whole weight for the first time since nineteen"}; the rota sings under load; the ring bears; and the Sage's Shuttle crosses the gap once, twice, gold all the way down, and the new sky comes up under tension like a sail filling.`)+P(`The chord changes. Four hundred years of one sustained note — and then, for the first time, a CHORD: ten thousand willing lines at their own pitches, holding, harmonizing, ALIVE. All down the galleries, the rota feels the load come on gentle as a yoke fitted right, and the Thousand Reels learns, in one dawn, what the sky weighs when nobody is being burned to hold it: almost nothing. Almost nothing, shared.`),
+ c:()=>[{id:"c0",l:`The old Loom stands down. The white city is just a city. And there is one door left open.`,go:"a5c31_door"}]};
+
+SC["a5c30_cut"]={t:()=>P(`The Fray does not die — wounds don't — but at the ring's last knot it stops being a wound and becomes a SEAM: held, mended edge to mended edge, by the suture-work heaven never stopped sending and the Court never stopped burning. The surge spends itself against freely-given knots tied in every grammar at once, and finds no purchase, because nothing in the ring yields the way harvested thread yields. Nothing in it was taken.`)+P(`The Grand Loom is gone. The valley under the lake stands empty for the first time since its first anchor was sunk — anchors bare, reels still, the great chord silent — and the sky HOLDS: on the rota's watch-shifts, on the ring, on the Between's patient needlework, on the truth that tears call their own thread. ${G.f.a4_suyin=="freed"?"Suyin walks the empty valley floor with Sho on her arm, free, weeping without expression the way her sister sweeps: completely.":"Suyin, her woven fan released by the machine's death, stands swaying on the bare anchor-stone, unwoven after forty years, and Sho's voice or Ruan's or Mei's — someone of yours — is the first to reach her, which matters, and always will."}`)+P(`The Lady's voice comes one last time from the one black reel that still turns, small as a clock: “No loom. The sum I never dared run.” A long tick of winding. “Mind the seam, little stitch. A sky held by promises must KEEP them — every shift, every season, forever. I know exactly how heavy that is. I am the only one who knows. Wake me if the promises thin.” And the black reel winds itself still, a clerk closing the office, four hundred years off the clock.`),
+ c:()=>[{id:"c0",l:`The valley is empty, the seam holds, and there is one door left open.`,go:"a5c31_door"}]};
+
+SC["a5c30_inherit"]={t:()=>P(`The examination ends the only way the founder's curriculum allows: completely.`)+P(`When your last Counterweave runs gold through her final seal-cast and the white admits, line by line, that it holds, the Lady of the First Reel stops — everywhere, all at once — and the body of thread straightens, and bows to you the bow of a retiring magistrate to the incoming seal.`)+P(`“Pass,” says everywhere, quietly.`)+P(`What follows is not a coronation; it's a SHIFT CHANGE, and it takes all day, and it is the most careful work two Sages and a city have ever done. Her centuries pay out of the heart-seat reel by reel: into the rota, into archives, into one long-overdue erratum read aloud to the assembled Court: <i>the consignments were sutures; the founder erred; the dead deserve the saying.</i> And you sit down into the heart of the sky as she unwinds, the Shuttle tying YOU in living — pattern's own grammar, the heart that mends instead of spends — and the load comes onto your shoulders the way the world came at you on a riverbank: cold, vast, and survivable, because this time the whole ring bears with you, and the rota stands its watch, and nothing in the new warp is anyone's stolen life.`)+P(`The last of her unwinds at dusk. The final filament — the first thread she ever spun, the one the black reel was wound on — she lays across your hands herself. “The Loom remembers its stitches,” she says, from one small mouth, the everywhere all gone, just a tired woman at the end of an impossible shift. “Remember mine.”`),
+ c:()=>[{id:"c0",l:`The chord settles around its new heart. And there is one door left open.`,go:"a5c31_door"}]};

@@ -6,8 +6,8 @@
       endings histogram, scene coverage, step-cap hits (softlock suspects). */
 (function(){
  if(new URLSearchParams(location.search).get("qa")!=="1")return;
- const TERMINAL=id=>id==="end_book2"||id==="c4_harvested";
- const FUZZ_RUNS=40, STEP_CAP=900;
+ const TERMINAL=id=>id==="end_final"||id==="c4_harvested";
+ const FUZZ_RUNS=40, STEP_CAP=1300;
  const jsErrors=[];
  window.addEventListener("error",e=>jsErrors.push(e.message+" @"+(e.filename||"").split("/").pop()+":"+e.lineno));
 
@@ -16,6 +16,8 @@
   pats:{snare:1,razor:1,mirror:1,mend:1,unravel:1,puppet:1},f:{woke:1,bg:"kata",grasped:1}});return g;}
 
  function graphAudit(){
+  // Edges chosen by dynamic go() at runtime — declared here so the static audit can see them.
+  const DYNAMIC={a5c31_go:["woven","free","heir"].flatMap(l=>["home","open","shut"].map(d=>"e_"+l+"_"+d))};
   const ids=Object.keys(SC), edges={}, tErrors=[], badTargets=[];
   for(const id of ids){
    const sc=SC[id]; edges[id]=new Set(); G=qaState(); G.scene=id; C=null; CKPT=null;
@@ -28,6 +30,7 @@
      else if(typeof c.go==="function"){G=qaState();try{const t=c.go();if(typeof t==="string")edges[id].add(t);}catch(e){tErrors.push(id+"/"+c.id+": go() threw: "+e.message);}}
     }}catch(e){tErrors.push(id+": c() threw: "+e.message);}}
    for(const t of edges[id])if(!SC[t])badTargets.push(id+" -> "+t);
+   for(const t of (DYNAMIC[id]||[]))edges[id].add(t);
   }
   const seen=new Set(["start"]);const q=["start"];
   while(q.length){const id=q.pop();for(const t of (edges[id]||[]))if(SC[t]&&!seen.has(t)){seen.add(t);q.push(t);}}
@@ -47,6 +50,7 @@
     if(!btns.length){softlocks++;endings["SOFTLOCK@"+G.scene]=(endings["SOFTLOCK@"+G.scene]||0)+1;break;}
     let pick;
     if(G.scene==="end_book1"){pick=btns.find(b=>/Act III/.test(b.textContent))||rnd(btns);pick.click();continue;}
+    if(G.scene==="end_book2"){pick=btns.find(b=>/Act IV/.test(b.textContent))||rnd(btns);pick.click();continue;}
     if(C&&C.charged){pick=btns.find(b=>/Unravel|Puppet|Mirror/.test(b.textContent))||rnd(btns);}
     else if(C&&G.hp<=8){pick=btns.find(b=>/Mend|Guard/.test(b.textContent))||rnd(btns);}
     else if(C&&Math.random()<0.6){pick=btns.find(b=>/Razor|Strike/.test(b.textContent))||rnd(btns);}

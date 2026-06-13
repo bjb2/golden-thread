@@ -2,7 +2,7 @@
 /* ============ STATE ============ */
 const REALMS=["Spinner","Knotter","Weaver","Loomheart","Pattern Sage"];
 var G=null, C=null, CKPT=null;
-function fresh(){return{name:"Eli",body:2,mind:2,heart:2,insight:0,realm:0,hp:20,maxhp:20,thr:2,maxthr:2,
+function fresh(){return{name:"Finn",body:2,mind:2,heart:2,insight:0,realm:0,hp:20,maxhp:20,thr:2,maxthr:2,
  pats:{},mei:0,bao:0,sho:0,yan:0,tang:0,f:{},scene:"start",notes:[]};}
 const SAVE_VER=3;
 function save(){if(G.scene==="start")return;try{G.v=SAVE_VER;localStorage.setItem("gthread",JSON.stringify(G));}catch(e){}}
@@ -16,7 +16,8 @@ function learn(p,label){if(!G.pats[p]){G.pats[p]=true;note("Pattern learned: <b>
 const PATS={razor:{n:"Razor Thread",cost:2,d:"slicing qi-thread"},snare:{n:"Snare Knot",cost:2,d:"binds the foe one turn"},
  mirror:{n:"Mirror Lattice",cost:1,d:"blocks and reflects the next blow"},mend:{n:"Mend Weave",cost:2,d:"reknits flesh"},
  unravel:{n:"Unravel",cost:3,d:"tears apart a gathering technique"},
- puppet:{n:"Puppet Strings",cost:3,d:"yank the foe\u2019s technique-threads inward"}};
+ puppet:{n:"Puppet Strings",cost:3,d:"yank the foe\u2019s technique-threads inward"},
+ counter:{n:"Counterweave",cost:4,d:"the sage\u2019s mending \u2014 harm, heal, and unmake stances"}};
 const STANCES={
  iron:{see:"Its qi is braced like temple bronze \u2014 fists will bruise on it, but threads slide between the plates."},
  flow:{see:"Its form runs like meltwater \u2014 edges and knots slip off it, but a plain blow would break the current."}};
@@ -112,7 +113,10 @@ function round(a){
    dmgEnemy(d,"Unravel rips qi loose");}
   if(a==="puppet"){const nm=C.moves[C.i%C.moves.length];let d=nm.d!=null?nm.d:4;
    if(nm.kind==="release"&&!C.charged)d=Math.ceil(d/3);if(C.stance==="flow")d=Math.ceil(d/2);C.charged=false;C.i++;
-   dmgEnemy(d,"Puppet Strings turn "+nm.n+" inward");}}
+   dmgEnemy(d,"Puppet Strings turn "+nm.n+" inward");}
+  if(a==="counter"){let d=3+G.mind;
+   if(C.stance){C.stance=null;clog('<span class="good">The Counterweave does not break the stance \u2014 it mends the qi past needing one. The form simply isn\u2019t there anymore.</span>');}
+   G.hp=Math.min(G.maxhp,G.hp+3);dmgEnemy(d,"Counterweave runs gold through the foe\u2019s fray");}}
  if(C.hp<=0)return endCombat(true);
  enemyAct();
  if(!C)return; // combat ended via mirror reflection
@@ -151,7 +155,8 @@ const ENEMIES={};
 const IMG={title:"title",weasel:"weasel",trials:"trials",furnace:"furnace",
  throne:"throne",home:"home",jianghu:"jianghu",heaven:"heaven",harvested:"harvested",
  brackets:"brackets",rite:"rite",ash:"ash",seal:"seal",
- steps:"steps",shrine:"shrine",marsh:"marsh",silk:"silk",cocoon:"cocoon"};
+ steps:"steps",shrine:"shrine",marsh:"marsh",silk:"silk",cocoon:"cocoon",
+ court:"court",suyin:"suyin",loom:"loom",door:"door",threads:"threads",dawn:"dawn"};
 
 /* ============ SCENES ============ */
 const P=t=>"<p>"+t+"</p>";const SYS=t=>'<div class="sys">'+t+'</div>';const DIV='<div class="divider">\u2042</div>';
