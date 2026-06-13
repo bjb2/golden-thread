@@ -30,8 +30,51 @@ function hud(){
  const pl=Object.keys(G.pats).map(k=>PATS[k].n).join(", ")||"none";
  $("hud").innerHTML='<div class="row"><span class="hp">HP '+G.hp+'/'+G.maxhp+'</span>'+
   '<span class="thr">Threads '+G.thr+'/'+G.maxthr+'</span><span><b>'+REALMS[G.realm]+'</b></span>'+
-  '<span>Body '+G.body+' · Mind '+G.mind+' · Heart '+G.heart+'</span><span>Insight '+G.insight+'</span></div>'+
+  '<span>Body '+G.body+' · Mind '+G.mind+' · Heart '+G.heart+'</span><span>Insight '+G.insight+'</span>'+
+  '<span class="jbtn" id="jbtn">\u2766 the thread so far</span></div>'+
   '<div class="row small">Patterns: '+pl+'</div><div class="bar"><i style="width:'+(100*G.hp/G.maxhp)+'%"></i></div>';
+ const jb=$("jbtn");if(jb)jb.onclick=openJournal;
+}
+function openJournal(){
+ const rel=v=>v>=3?"close":v>=2?"firm":v>=1?"known":null;
+ const bonds=[[G.mei,"Mei",rel(G.mei)],[G.bao,"Bao",rel(G.bao)],[G.sho,"Granny Sho",rel(G.sho)],
+  [G.yan,"Yan Shuo",rel(G.yan)],[G.tang,"Auntie Tang",G.tang>=2?"firm":G.tang>=1?"known":null],
+  [(G.f.ruan||0),"Iron Veil Ruan",G.f.a3_ruan_sworn?"sworn brother":rel(G.f.ruan||0)]];
+ const pick=(v,m)=>m[v];
+ const deeds=[
+  {kata:"You met your death mid-kata, body moving before thought.",music:"You died with eight unfinished bars still in your head.",code:"You died chasing a puzzle's last move.",sister:"You died thinking of a porch light left on."}[G.f.bg],
+  pick(G.f.a3_route,{sect:"Left the mountain as its itinerant auditor.",road:"Fled down the firewood paths, unsanctioned and unmissed."}),
+  pick(G.f.a3_furnace,{freed:"Freed Clearwater's furnace the moment you found it.",waiting:"Documented Clearwater and waited for the inspector \u2014 and did the arithmetic awake at night."}),
+  pick(G.f.a3_feral,{calmed:"Calmed the Reed Wife, the other foreigner \u2014 your first true source on the Court.",fled:"The Reed Wife slipped back into the marsh; the remainder is yours to carry.",ended:"Gave the Reed Wife the mercy the Loom never did."}),
+  pick(G.f.a3_marked,{sho:"The Court's white-thread claim rides Granny Sho's shoulder.",ruan:"The Court's white-thread claim rides Ruan's shoulder."}),
+  pick(G.f.a3_court,{guest:"Accepted the Court's invitation, on its own schedule.",refused:"Refused the Court, tea-bow and all.",defied:"Defied the white boat to its face."}),
+  G.f.a4_route?pick(G.f.a4_route,{guest:"Entered the Silkworm Court as an invited guest.",spy:"Infiltrated the Court under forged consignment papers.",prisoner:"Let the Court collect you, to reach its deepest room."}):null,
+  G.f.a4_truth?"Learned the Loom runs on willing weavers \u2014 the harvested souls are wasted fuel.":null,
+  pick(G.f.a4_audit,{published:"Published the Court's true ledger to the river sects.",held:"Hold the Court's audit sealed, a blade at its throat."}),
+  pick(G.f.a4_counter,{clean:"Broke through to Pattern Sage, clean, at the summit of understanding.",paid:"Broke through to Pattern Sage \u2014 and wove part of yourself into the door."}),
+  pick(G.f.a4_xian,{turned:"Turned Madam Xian, the Ninth Reel, to the willing rota.",stood:"Madam Xian remained unpersuaded, and unforgiven."}),
+  pick(G.f.a4_suyin,{freed:"Wen Suyin tore free to hold the gap as a free woman.",holds:"Wen Suyin holds the gap from inside the dying Loom."}),
+  pick(G.f.a5_loom,{woven:"You wove the counter-pattern over the sky.",free:"You unravelled the Grand Loom and trusted the world's own weave.",heir:"You became the heart of heaven."}),
+  pick(G.f.a5_door,{home:"You walked your own gold line home through the door between worlds.",open:"You held the door between worlds open for every soul still to come.",shut:"You sewed the door between worlds shut forever."}),
+  G.f.a5_threads?G.f.a5_threads+" freely-given threads answered in the final pattern.":null,
+ ].filter(Boolean);
+ const pats=Object.keys(G.pats).map(k=>PATS[k].n).join(" \u00b7 ")||"none yet";
+ let h='<div class="jrnl"><h2>'+G.name+'</h2>'+
+  '<div class="sub">'+REALMS[G.realm]+' \u00b7 the thread so far</div>'+
+  '<h3>Cultivation</h3><div class="stat"><span>Realm <b>'+REALMS[G.realm]+'</b></span>'+
+  '<span>Insight <b>'+G.insight+'</b></span><span>Threads <b>'+G.maxthr+'</b></span>'+
+  '<span>Body <b>'+G.body+'</b></span><span>Mind <b>'+G.mind+'</b></span><span>Heart <b>'+G.heart+'</b></span></div>'+
+  '<div class="pats">Patterns woven: '+pats+'</div>';
+ const shown=bonds.filter(b=>b[2]);
+ h+='<h3>Bonds</h3>';
+ if(shown.length)for(const b of shown)h+='<div class="bond"><span>'+b[1]+'</span><span class="w">'+b[2]+'</span></div>';
+ else h+='<div class="none">No bonds yet. The mountain is a cold place to arrive.</div>';
+ h+='<h3>The thread so far</h3>';
+ if(deeds.length){h+='<ul class="deeds">';for(const d of deeds)h+='<li>'+d+'</li>';h+='</ul>';}
+ else h+='<div class="none">Your story is only beginning.</div>';
+ h+='<div class="choices"><button class="ch" id="jback">\u2190 back to the story</button></div></div>';
+ $("main").innerHTML=h;window.scrollTo(0,0);
+ $("jback").onclick=()=>render();
 }
 function go(id){G.scene=id;C=null;save();render();}
 function art(sc){if(!sc.img||!IMG[sc.img])return"";const b="assets/"+IMG[sc.img];
