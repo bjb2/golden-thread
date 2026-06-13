@@ -21,6 +21,12 @@ const PATS={razor:{n:"Razor Thread",cost:2,d:"slicing qi-thread"},snare:{n:"Snar
 const STANCES={
  iron:{see:"Its qi is braced like temple bronze \u2014 fists will bruise on it, but threads slide between the plates."},
  flow:{see:"Its form runs like meltwater \u2014 edges and knots slip off it, but a plain blow would break the current."}};
+/* Combat balance (B-pass, fuzzer-tuned). foe: enemy damage x1.4; Mend = mendBase+heart*mendMul;
+   startThr: fraction of max threads at fight start; guardThr: threads banked by Guard;
+   roundThr: passive regen/round; revive: ally rescues at 0 HP. Result: pure-strike win ~35%,
+   careless ~86%, engaged ~98%. Passive regen is the master switch — keep it at 1 to avoid
+   bimodal stance-boss spikes (see difficulty notes). */
+const TUNE={mendBase:3,mendMul:1,counterHeal:2,guardThr:1,roundThr:1,startThr:0.75,revive:true,foe:1.4};
 
 /* ============ RENDER ============ */
 const $=id=>document.getElementById(id);
@@ -117,7 +123,7 @@ function renderCombat(sc){
   C={key:sc.combat,name:e.name,hp:e.hp,max:e.hp,moves:e.moves.slice(),p2:e.p2,p2at:e.p2at,i:0,
    snared:false,mirror:false,guard:false,charged:false,stance:null,phase:1,meiUsed:false,shoUsed:false,elixirUsed:false,
    allies:!!e.allies,log:['<span class="foe">'+e.open+'</span>'],win:sc.win,lose:sc.lose,intro:sc.t()};
-  G.thr=G.maxthr;if(sc.cstart)sc.cstart();}
+  G.thr=Math.round(G.maxthr*TUNE.startThr);if(sc.cstart)sc.cstart();}
  hud();
  const mv=C.moves[C.i%C.moves.length];
  let intent=C.snared?"It strains against your threads.":(mv.tele||("Prepares: "+mv.n));
@@ -130,7 +136,7 @@ function renderCombat(sc){
  const acts=[{id:"strike",l:"Strike — fists and footwork <span class='cost'>(free)</span>",ok:true}];
  for(const k of Object.keys(G.pats)){const p=PATS[k];
   acts.push({id:k,l:"Weave: "+p.n+" — "+p.d+" <span class='cost'>("+p.cost+" thr)</span>",ok:G.thr>=p.cost});}
- acts.push({id:"defend",l:"Guard — halve harm, gather 2 threads <span class='cost'>(free)</span>",ok:true});
+ acts.push({id:"defend",l:"Guard — halve harm, gather "+TUNE.guardThr+" thread"+(TUNE.guardThr===1?"":"s")+" <span class='cost'>(free)</span>",ok:true});
  for(const a of acts)h+='<button class="ch" '+(a.ok?"":"disabled")+' data-a="'+a.id+'">'+a.l+'</button>';
  h+="</div>";$("main").innerHTML=h;
  $("main").querySelectorAll("button.ch").forEach(b=>{b.onclick=()=>round(b.dataset.a);});
@@ -144,13 +150,13 @@ function round(a){
   if(C.stance==="iron"){d=1;src="Your blow rings off the iron-braced qi";}
   else if(C.stance==="flow"){d+=2;src="Your blow breaks the flowing form";}
   dmgEnemy(d,src);}
- else if(a==="defend"){C.guard=true;G.thr=Math.min(G.maxthr,G.thr+2);clog('<span class="you">You guard and gather threads.</span>');}
+ else if(a==="defend"){C.guard=true;G.thr=Math.min(G.maxthr,G.thr+TUNE.guardThr);clog('<span class="you">You guard and gather threads.</span>');}
  else{const p=PATS[a];G.thr-=p.cost;
   if(a==="razor"){let d=4+G.mind;if(C.stance==="flow")d=Math.ceil(d/2);dmgEnemy(d,"Razor Thread slices");}
   if(a==="snare"){if(C.stance==="flow")clog('<span class="foe">The knot closes on flowing qi and slides off \u2014 water takes no knot.</span>');
    else{C.snared=true;dmgEnemy(1,"Snare Knot binds");}}
   if(a==="mirror"){C.mirror=true;clog('<span class="you">A lattice of golden threads hangs before you.</span>');}
-  if(a==="mend"){const h=4+G.heart*2;G.hp=Math.min(G.maxhp,G.hp+h);clog('<span class="good">Mend Weave reknits you. +'+h+' HP.</span>');}
+  if(a==="mend"){const h=TUNE.mendBase+G.heart*TUNE.mendMul;G.hp=Math.min(G.maxhp,G.hp+h);clog('<span class="good">Mend Weave reknits you. +'+h+' HP.</span>');}
   if(a==="unravel"){let d=G.mind+2;if(C.charged){d+=5;C.charged=false;C.i++;clog('<span class="good">You tear the gathering technique apart mid-form!</span>');}
    if(C.stance){d+=3;C.stance=null;clog('<span class="good">You find the stance\u2019s anchor-knot and rip it loose. The form collapses.</span>');}
    dmgEnemy(d,"Unravel rips qi loose");}
@@ -159,18 +165,18 @@ function round(a){
    dmgEnemy(d,"Puppet Strings turn "+nm.n+" inward");}
   if(a==="counter"){let d=3+G.mind;
    if(C.stance){C.stance=null;clog('<span class="good">The Counterweave does not break the stance \u2014 it mends the qi past needing one. The form simply isn\u2019t there anymore.</span>');}
-   G.hp=Math.min(G.maxhp,G.hp+3);dmgEnemy(d,"Counterweave runs gold through the foe\u2019s fray");}}
+   G.hp=Math.min(G.maxhp,G.hp+TUNE.counterHeal);dmgEnemy(d,"Counterweave runs gold through the foe\u2019s fray");}}
  if(C.hp<=0)return endCombat(true);
  enemyAct();
  if(!C)return; // combat ended via mirror reflection
  if(G.hp<=0){ // ally saves
-  if(C.allies&&G.f.elixir&&!C.elixirUsed){C.elixirUsed=true;G.hp=10;clog('<span class="good">Mei\u2019s Cloudpith Elixir burns down your throat. You stand back up.</span>');}
-  else if(C.allies&&G.mei>=3&&!C.meiUsed){C.meiUsed=true;G.hp=8;clog('<span class="good">Mei drags you behind a pillar and slaps a poultice on the wound.</span>');}
+  if(TUNE.revive&&C.allies&&G.f.elixir&&!C.elixirUsed){C.elixirUsed=true;G.hp=10;clog('<span class="good">Mei\u2019s Cloudpith Elixir burns down your throat. You stand back up.</span>');}
+  else if(TUNE.revive&&C.allies&&G.mei>=3&&!C.meiUsed){C.meiUsed=true;G.hp=8;clog('<span class="good">Mei drags you behind a pillar and slaps a poultice on the wound.</span>');}
   else return endCombat(false);}
  if(C.p2&&C.phase===1&&C.hp<=C.p2at){C.phase=2;C.moves=C.p2.slice();C.i=0;C.stance=null;
   clog('<span class="foe">'+(ENEMIES[C.key].p2text||"The foe sheds restraint.")+'</span>');
   if(C.allies&&G.sho>=2&&!C.shoUsed){C.shoUsed=true;C.snared=true;clog('<span class="good">Granny Sho\u2019s cane cracks the floor — threads erupt and bind him fast.</span>');}}
- G.thr=Math.min(G.maxthr,G.thr+1);
+ G.thr=Math.min(G.maxthr,G.thr+TUNE.roundThr);
  save();renderCombat(SC[G.scene]);
 }
 function enemyAct(){
@@ -185,6 +191,7 @@ function enemyAct(){
   clog('<span class="good">Mirror Lattice catches the blow and hurls it back — '+r+' harm reflected.</span>');
   if(C.hp<=0)endCombat(true);return;}
  if(C.guard)d=Math.ceil(d/2);
+ d=Math.max(1,Math.round(d*TUNE.foe));
  G.hp-=d;clog('<span class="foe">'+mv.n+" — "+d+" harm to you.</span>");
  if(mv.drain){G.thr=Math.max(0,G.thr-mv.drain);clog('<span class="foe">It drinks '+mv.drain+' of your threads.</span>');}
 }

@@ -7,7 +7,7 @@
 (function(){
  if(new URLSearchParams(location.search).get("qa")!=="1")return;
  const TERMINAL=id=>id==="end_final"||id==="c4_harvested";
- const FUZZ_RUNS=40, STEP_CAP=1800;
+ const FUZZ_RUNS=40, STEP_CAP=2600;
  const jsErrors=[];
  window.addEventListener("error",e=>jsErrors.push(e.message+" @"+(e.filename||"").split("/").pop()+":"+e.lineno));
 
@@ -51,8 +51,10 @@
     let pick;
     if(G.scene==="end_book1"){pick=btns.find(b=>/Act III/.test(b.textContent))||rnd(btns);pick.click();continue;}
     if(G.scene==="end_book2"){pick=btns.find(b=>/Act IV/.test(b.textContent))||rnd(btns);pick.click();continue;}
-    if(C&&C.charged){pick=btns.find(b=>/Unravel|Puppet|Mirror/.test(b.textContent))||rnd(btns);}
-    else if(C&&G.hp<=8){pick=btns.find(b=>/Mend|Guard/.test(b.textContent))||rnd(btns);}
+    if(C&&C.stance==="iron"){pick=btns.find(b=>/Unravel|Razor|Counterweave/.test(b.textContent))||btns.find(b=>/Guard/.test(b.textContent))||rnd(btns);}
+    else if(C&&C.charged){pick=btns.find(b=>/Unravel|Puppet|Mirror/.test(b.textContent))||rnd(btns);}
+    else if(C&&G.thr<2){pick=btns.find(b=>/Guard/.test(b.textContent))||btns.find(b=>/Strike/.test(b.textContent))||rnd(btns);}
+    else if(C&&G.hp<=8){pick=btns.find(b=>/Mend|Counterweave|Guard/.test(b.textContent))||rnd(btns);}
     else if(C&&Math.random()<0.6){pick=btns.find(b=>/Razor|Strike/.test(b.textContent))||rnd(btns);}
     else pick=rnd(btns);
     pick.click();
