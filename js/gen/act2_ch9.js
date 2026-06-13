@@ -5,7 +5,7 @@
 Object.assign(ENEMIES,{
  ruan:{name:"Iron Veil Ruan, Kang's First Disciple",hp:30,p2at:12,
   open:"Ruan bows exactly the degree courtesy requires and not a hair more. \u201CMy master wishes to know your measure. I am the measuring rod.\u201D",
-  p2text:"Ruan's iron veil cracks. Beneath the calm is something desperate \u2014 a man whose master accepts no second places.",
+  p2text:"Ruan's iron veil cracks, and what's under it has a hunted look \u2014 a man whose master accepts no second places.",
   moves:[{n:"Veil of Iron",kind:"stance",st:"iron",text:"Iron grinds over his skin, joint by joint, patient as winter.",tele:"He is veiling \u2014 iron climbing his skin like frost up a window."},
    {n:"Iron veil palm",d:5},{n:"Meridian needle",d:4,drain:1},
    {n:"Veil of Water",kind:"stance",st:"flow",text:"The iron sloughs away and his form goes loose and bright. The veil, it turns out, can flow as well as brace.",tele:"The veil is melting \u2014 his form is loosening into current."},
@@ -30,7 +30,7 @@ SC["a2c9_semi_pre"]={t:()=>P(`The board posts it in characters a foot tall: the 
   {id:"c1",l:`Sit with your back to the stage wall, breathe the way an old woman taught you, and let your threads come all the way home.`,do:()=>{G.thr=G.maxthr;G.hp=Math.min(G.maxhp,G.hp+5);note("+5 HP, threads full. The wall is cold. The breathing is older than the wall.");},go:"c3t_final"}]};
 
 SC.c3t_final={img:"trials",combat:"ruan",win:"c3t_victory",lose:"c3t_loss",
- t:()=>P("The gong sounds. Ruan does not charge. He walks, iron rising over his skin like frost over a window, and the crowd goes very quiet.")+
+ t:()=>P("The gong sounds. Ruan does not charge. He walks, iron climbing over his skin joint by joint, and the crowd goes very quiet.")+
  SYS("The veil braces and the veil flows \u2014 read it. His Mountain-Crushing Palm is one long, beautiful thread: Unravel it, Mirror it, or pull it home with Puppet Strings."),
  cstart:()=>{if(G.f.a2_ruan_read){C.snared=true;clog('<span class="good">The hinge in his rhythm opens \u2014 and your knot is already in it. Ruan starts the match bound.</span>');}}};
 

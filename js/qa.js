@@ -7,7 +7,7 @@
 (function(){
  if(new URLSearchParams(location.search).get("qa")!=="1")return;
  const TERMINAL=id=>id==="end_final"||id==="c4_harvested";
- const FUZZ_RUNS=40, STEP_CAP=1300;
+ const FUZZ_RUNS=40, STEP_CAP=1800;
  const jsErrors=[];
  window.addEventListener("error",e=>jsErrors.push(e.message+" @"+(e.filename||"").split("/").pop()+":"+e.lineno));
 
